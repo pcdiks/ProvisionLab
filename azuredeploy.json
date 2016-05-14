@@ -140,10 +140,6 @@
         "description": "The password for the local account that will be created on all the new VMs."
       }
     },
-    "Create_a_Domain_Controller.DCPassword": {
-      "type": "string",
-      "defaultValue": "Welkom01"
-    },
     "Create_a_Domain_Controller.DomainNetbios": {
       "type": "string",
       "defaultValue": "s4b"
@@ -287,7 +283,7 @@
             "parameters": [
               {
                 "name": "DCPassword",
-                "value": "[parameters('Create_a_Domain_Controller.DCPassword')]"
+                "value": "[parameters('password')]"
               },
               {
                 "name": "DomainNetbios",
@@ -324,7 +320,26 @@
         "password": "[parameters('password')]",
         "isAuthenticationWithSshKey": false,
         "labVirtualNetworkId": "[variables('labVirtualNetworkId')]",
-        "labSubnetName": "[variables('labSubnetName')]"
+        "labSubnetName": "[variables('labSubnetName')]",
+        "artifacts": [
+          {
+            "artifactId": "[resourceId('Microsoft.DevTestLab/labs/artifactSources/artifacts', parameters('labName'), [concat('Repo', parameters('newLabName'))], 'create-member')]",
+            "parameters": [
+              {
+                "name": "DCPassword",
+                "value": "[parameters('password')]"
+              },
+              {
+                "name": "DCUser",
+                "value": "[parameters('username')]"
+              },
+              {
+                "name": "DomainFQDN",
+                "value": "[parameters('Create_a_Domain_Controller.DomainFQDN')]"
+              }
+            ]
+          }
+        ]
       }
     },
     {
