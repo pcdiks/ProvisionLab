@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newVMName": {
+      "type": "string",
+      "defaultValue": "SqlNameInput"
+    },
+    "labName": {
+      "type": "string",
+      "defaultValue": "SkypeForBusiness"
+    },
+    "size": {
+      "type": "string",
+      "defaultValue": "Standard_A2"
+    },
+    "userName": {
+      "type": "string",
+      "defaultValue": "UserNameInput"
+    },
+    "password": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "vmId": "[resourceId ('Microsoft.DevTestLab/labs/virtualMachines', parameters('labName'), parameters('newVMName'))]",
+    "vmName": "[concat(parameters('labName'), '/', parameters('newVMName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-05-21-preview",
+      "type": "Microsoft.DevTestLab/labs/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "labVirtualNetworkId": "[resourceId('Microsoft.DevTestLab/labs/virtualnetworks', parameters('labName'), 'dtlskypeforbusiness')]",
+        "notes": "SQL Server 2014 SP1 Standard on Windows Server 2012 R2",
+        "galleryImageReference": {
+          "offer": "SQL2014SP1-WS2012R2",
+          "publisher": "MicrosoftSQLServer",
+          "sku": "Standard",
+          "osType": "Windows",
+          "version": "latest"
+        },
+        "size": "[parameters('size')]",
+        "userName": "[parameters('userName')]",
+        "password": "[parameters('password')]",
+        "isAuthenticationWithSshKey": false,
+        "labSubnetName": "DtlSkypeForBusinessSubnet",
+        "disallowPublicIpAddress": false
+      }
+    }
+  ],
+  "outputs": {
+    "labVMId": {
+      "type": "string",
+      "value": "[variables('vmId')]"
+    }
+  }
+}

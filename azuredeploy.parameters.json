@@ -1,0 +1,60 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newLabName": {
+      "value": "SkypeForBusiness"
+    },
+    "labVmShutDownTime": {
+      "value": "19:00"
+    },
+    "maxAllowedVmsPerUser": {
+      "value": 10
+    },
+    "maxAllowedVmsPerLab": {
+      "value": 100
+    },
+    "allowedVmSizes": {
+      "value": "\"Standard_A2\", \"Standard_A4\""
+    },
+    "artifactRepoUri": {
+        "value": "https://github.com/pcdiks/azurelab.git"
+    },
+    "artifactRepoFolder": {
+        "value": "Artifacts"
+    },
+    "artifactRepoBranch": {
+        "value": "master"
+    },
+    "artifactRepoDisplayName": {
+        "value": "PrivateRepo"
+    },
+    "artifactRepoSecurityToken": {
+        "value": "7cb6ade7b870035f1d608b9e7eca00f8676177bb" 
+    },
+    "artifactRepoType": {
+        "value": "Github"
+    },
+    "dcVMName": {
+      "value": "DC001"
+    },
+    "sqlVMName": {
+      "value": "SQL001"
+    },
+    "webVMName": {
+      "value": "WEB001"
+    },
+    "dirVMName": {
+      "value": "DIR001"
+    },
+    "VMSize": {
+      "value": "Standard_A2"
+    },
+    "username": {
+      "value": "demoadmin"
+    },
+    "password": {
+      "value": "Welkom01"
+    }
+  }
+}
