@@ -15,7 +15,7 @@
       "value": 100
     },
     "allowedVmSizes": {
-      "value": "\"Standard_A2\", \"Standard_A4\""
+      "value": "\"Standard_A1\", \"Standard_A2\", \"Standard_A4\""
     },
     "artifactRepoUri": {
         "value": "https://github.com/pcdiks/azurelab.git"

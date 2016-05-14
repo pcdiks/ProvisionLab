@@ -42,6 +42,13 @@
         "description": "Set 'allowed VM sizes' policy: A comma-separated list of VM sizes that are allowed in the lab."
       }
     },
+    "artifactsLocation": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/pcdiks/ProvisionLab/master",
+      "metadata": {
+        "description": "Storage Account/GitHub base uri for required files"
+      }
+    },
     "artifactRepoUri": {
       "type": "string",
       "defaultValue": "https://github.com/pcdiks/azurelab.git",
@@ -114,7 +121,7 @@
     },
     "VMSize": {
       "type": "string",
-      "defaultValue": "Standard_A2",
+      "defaultValue": "Standard_A1",
       "metadata": {
         "description": "The size of all the new VMs to be created in the lab."
       }
@@ -132,13 +139,25 @@
       "metadata": {
         "description": "The password for the local account that will be created on all the new VMs."
       }
+    },
+    "Create_a_Domain_Controller.DCPassword": {
+      "type": "string",
+      "defaultValue": "Welkom01"
+    },
+    "Create_a_Domain_Controller.DomainNetbios": {
+      "type": "string",
+      "defaultValue": "s4b"
+    },
+    "Create_a_Domain_Controller.DomainFQDN": {
+      "type": "string",
+      "defaultValue": "s4b.intra"
     }
   },
   "variables": {
     "newLabId": "[resourceId('Microsoft.DevTestLab/labs', parameters('newLabName'))]",
     "labSubnetName": "[concat(variables('labVirtualNetworkName'), 'Subnet')]",
     "labVirtualNetworkName": "[concat('Dtl', parameters('newLabName'))]",
-    "labVirtualNetworkId": "[resourceId('Microsoft.DevTestLab/labs/virtualNetworks', parameters('newLabName'), variables('labVirtualNetworkName'))]",
+    "labVirtualNetworkId": "[resourceId('Microsoft.DevTestLab/labs/virtualNetworks', parameters('newLabName'), variables('labVirtualNetworkName'))]"
   },
   "resources": [
     {
@@ -261,7 +280,26 @@
         "sshKey": "",
         "password": "[parameters('password')]",
         "labVirtualNetworkId": "[variables('labVirtualNetworkId')]",
-        "labSubnetName": "[variables('labSubnetName')]"
+        "labSubnetName": "[variables('labSubnetName')]",
+        "artifacts": [
+          {
+            "artifactId": "[resourceId('Microsoft.DevTestLab/labs/artifactSources/artifacts', parameters('labName'), [concat('Repo', parameters('newLabName'))], 'create-dc')]",
+            "parameters": [
+              {
+                "name": "DCPassword",
+                "value": "[parameters('Create_a_Domain_Controller.DCPassword')]"
+              },
+              {
+                "name": "DomainNetbios",
+                "value": "[parameters('Create_a_Domain_Controller.DomainNetbios')]"
+              },
+              {
+                "name": "DomainFQDN",
+                "value": "[parameters('Create_a_Domain_Controller.DomainFQDN')]"
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -270,7 +308,7 @@
       "name": "[concat(parameters('newLabName'), '/', parameters('sqlVMName'))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[variables('labVirtualNetworkId')]"
+        "[variables('labVirtualNetworkId')]", "[concat(parameters('newLabName'), '/', parameters('dcVMName'))]"
       ],
       "properties": {
         "notes": "SQL Server 2014 SP1 Standard on Windows Server 2012 R2",
@@ -295,7 +333,7 @@
       "name": "[concat(parameters('newLabName'), '/', parameters('webVMName'))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[variables('labVirtualNetworkId')]"
+        "[variables('labVirtualNetworkId')]", "[concat(parameters('newLabName'), '/', parameters('dcVMName'))]"
       ],
       "properties": {
         "notes": "Windows Server 2016 Technical Preview 5",
@@ -321,7 +359,7 @@
       "name": "[concat(parameters('newLabName'), '/', parameters('dirVMName'))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[variables('labVirtualNetworkId')]"
+        "[variables('labVirtualNetworkId')]", "[concat(parameters('newLabName'), '/', parameters('dcVMName'))]"
       ],
       "properties": {
         "notes": "Windows Server 2016 Technical Preview 5",
